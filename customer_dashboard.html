@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7f9;
+            color: #333;
+        }
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .full-width {
+            grid-column: 1 / span 2;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .summary-card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .summary-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #2575fc;
+        }
+        h2 {
+            color: #2575fc;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>Customer Analytics Dashboard</h1>
+        <p>Comprehensive analysis of customer behavior, sales trends, and product performance</p>
+    </div>
+
+    <div class="summary-cards">
+        <div class="summary-card">
+            <h3>TOTAL SALES</h3>
+            <div class="value">$2.3M</div>
+            <div>+12.5% vs last period</div>
+        </div>
+        <div class="summary-card">
+            <h3>AVERAGE ORDER VALUE</h3>
+            <div class="value">$243</div>
+            <div>+5.2% vs last period</div>
+        </div>
+        <div class="summary-card">
+            <h3>CUSTOMER COUNT</h3>
+            <div class="value">793</div>
+            <div>+8.7% vs last period</div>
+        </div>
+        <div class="summary-card">
+            <h3>PROFIT MARGIN</h3>
+            <div class="value">14.8%</div>
+            <div>+2.3% vs last period</div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="chart-container">
+            <h2>Sales by Category</h2>
+            <div id="categoryChart" style="height: 300px;"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Sales by Region</h2>
+            <div id="regionChart" style="height: 300px;"></div>
+        </div>
+        <div class="chart-container full-width">
+            <h2>Sales Trend Over Time</h2>
+            <div id="trendChart" style="height: 350px;"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Profit by Sub-Category</h2>
+            <div id="subcategoryChart" style="height: 300px;"></div>
+        </div>
+        <div class="chart-container">
+            <h2>Customer Segment Analysis</h2>
+            <div id="segmentChart" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Category Chart
+        var categoryData = [{
+            x: ['Furniture', 'Office Supplies', 'Technology'],
+            y: [742000, 719047, 836154],
+            type: 'bar',
+            marker: {
+                color: ['#FF6B6B', '#4ECDC4', '#45B7D1']
+            }
+        }];
+        
+        var categoryLayout = {
+            margin: {t: 30}
+        };
+        
+        Plotly.newPlot('categoryChart', categoryData, categoryLayout);
+        
+        // Region Chart
+        var regionData = [{
+            values: [402200, 725047, 501200, 678800],
+            labels: ['West', 'East', 'South', 'Central'],
+            type: 'pie',
+            hole: 0.4,
+            marker: {
+                colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA73F']
+            }
+        }];
+        
+        var regionLayout = {
+            margin: {t: 30}
+        };
+        
+        Plotly.newPlot('regionChart', regionData, regionLayout);
+        
+        // Trend Chart
+        var trendData = [{
+            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y: [185000, 192000, 210000, 198000, 215000, 230000, 245000, 251000, 238000, 260000, 275000, 310000],
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: {
+                color: '#2575fc',
+                width: 3
+            },
+            marker: {
+                size: 8
+            }
+        }];
+        
+        var trendLayout = {
+            margin: {t: 30},
+            yaxis: {
+                title: 'Sales ($)'
+            }
+        };
+        
+        Plotly.newPlot('trendChart', trendData, trendLayout);
+        
+        // Sub-Category Chart
+        var subcategoryData = [{
+            x: ['Phones', 'Chairs', 'Storage', 'Tables', 'Binders', 'Machines', 'Accessories', 'Paper', 'Appliances', 'Bookcases', 'Supplies', 'Art', 'Envelopes', 'Labels', 'Furnishings'],
+            y: [145200, 132500, 121800, 98700, 152300, 135400, 87600, 112400, 76500, 65400, 54300, 43200, 32100, 21000, 19800],
+            type: 'bar',
+            marker: {
+                color: '#4ECDC4'
+            }
+        }];
+        
+        var subcategoryLayout = {
+            margin: {t: 30}
+        };
+        
+        Plotly.newPlot('subcategoryChart', subcategoryData, subcategoryLayout);
+        
+        // Segment Chart
+        var segmentData = [{
+            values: [35, 25, 20, 15, 5],
+            labels: ['Corporate', 'Home Office', 'Small Business', 'Consumer', 'Other'],
+            type: 'pie',
+            marker: {
+                colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA73F', '#96CEB4']
+            }
+        }];
+        
+        var segmentLayout = {
+            margin: {t: 30},
+            height: 300
+        };
+        
+        Plotly.newPlot('segmentChart', segmentData, segmentLayout);
+    </script>
+</body>
+</html>
