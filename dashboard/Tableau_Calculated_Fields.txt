@@ -1,0 +1,32 @@
+
+Tableau Calculated Fields and instructions
+-----------------------------------------
+
+Place SampleSuperstore.csv in the same folder as the Tableau workbook/extract.
+
+Calculated fields:
+
+Total Sales: SUM([Sales])
+Total Profit: SUM([Profit])
+Profit Margin: SUM([Profit]) / SUM([Sales])
+
+Last Purchase Date:
+{ FIXED [Customer ID] : MAX([Order Date]) }
+
+Recency Days:
+DATEDIFF('day', [Last Purchase Date], TODAY())
+
+Frequency:
+{ FIXED [Customer ID] : COUNTD([Order ID]) }
+
+Monetary:
+{ FIXED [Customer ID] : SUM([Sales]) }
+
+CustomerAvgOrderValue:
+{ FIXED [Customer ID] : AVG([Sales]) }
+
+Notes:
+- Use extracts (.hyper) for performance.
+- Create parameter 'Discount Rate' (range 0 to 0.5 step 0.01) to model what-if scenarios.
+- For cohort analysis, create calculated field 'Cohort Month' = DATETRUNC('month', [Order Date])
+  then compute retention with table calculations or LODs per cohort.

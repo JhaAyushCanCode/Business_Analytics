@@ -1,0 +1,18 @@
+
+// Power Query M: Load & clean SampleSuperstore.csv
+let
+  Source = Csv.Document(File.Contents("SampleSuperstore.csv"),[Delimiter=",", Columns=18, Encoding=1252, QuoteStyle=QuoteStyle.Csv]),
+  Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+  Renamed = Table.RenameColumns(Promoted, {{"Order Date","Order Date"},{"Ship Date","Ship Date"}}),
+  ChangedTypes = Table.TransformColumnTypes(Renamed,{
+    {"Order Date", type date},
+    {"Ship Date", type date},
+    {"Sales", type number},
+    {"Quantity", Int64.Type},
+    {"Discount", type number},
+    {"Profit", type number}
+  }),
+  AddedOrderDateKey = Table.AddColumn(ChangedTypes, "OrderDateKey", each Date.ToText([Order Date], "yyyyMMdd"), type text),
+  TrimmedCustomerID = Table.TransformColumns(AddedOrderDateKey, {{"Customer ID", Text.Trim, type text}})
+in
+  TrimmedCustomerID

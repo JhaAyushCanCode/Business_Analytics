@@ -1,0 +1,24 @@
+
+-- DAX Measures for Power BI
+
+Total Sales = SUM(SalesFact[Sales])
+Total Quantity = SUM(SalesFact[Quantity])
+Total Profit = SUM(SalesFact[Profit])
+Average Order Value = DIVIDE([Total Sales], DISTINCTCOUNT(SalesFact[Order ID]))
+
+-- Time Intelligence
+Sales YTD = TOTALYTD([Total Sales], DimDate[Date])
+Sales LY = CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date]))
+Sales MOM % = DIVIDE([Total Sales] - CALCULATE([Total Sales], PARALLELPERIOD(DimDate[Date], -1, MONTH)), CALCULATE([Total Sales], PARALLELPERIOD(DimDate[Date], -1, MONTH)))
+
+-- RFM / Customer
+Last Purchase Date = CALCULATE(MAX(SalesFact[Order Date]), ALLEXCEPT(DimCustomer, DimCustomer[Customer ID]))
+Recency Days = DATEDIFF([Last Purchase Date], MAX(DimDate[Date]), DAY)
+Frequency = CALCULATE(DISTINCTCOUNT(SalesFact[Order ID]), ALLEXCEPT(DimCustomer, DimCustomer[Customer ID]))
+Monetary = CALCULATE([Total Sales], ALLEXCEPT(DimCustomer, DimCustomer[Customer ID]))
+
+-- Example RFM scoring (1-5)
+R_Score = SWITCH(TRUE(), [Recency Days] <=30,5, [Recency Days] <=90,4, [Recency Days] <=180,3, [Recency Days] <=365,2,1)
+F_Score = SWITCH(TRUE(), [Frequency] >=20,5, [Frequency] >=10,4, [Frequency] >=5,3, [Frequency] >=2,2,1)
+M_Score = SWITCH(TRUE(), [Monetary] >=10000,5, [Monetary] >=5000,4, [Monetary] >=2000,3, [Monetary] >=500,2,1)
+RFMScore = VALUE( CONCATENATE(CONCATENATE(R_Score, F_Score), M_Score) )
